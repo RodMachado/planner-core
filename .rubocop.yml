@@ -1,0 +1,10 @@
+AllCops:
+  Exclude:
+    - 'db/schema.rb'
+  RunRailsCops: true
+Documentation:
+  Enabled: false
+Style/EmptyLinesAroundClassBody:
+  EnforcedStyle: empty_lines
+Metrics/LineLength:
+  Max: 100

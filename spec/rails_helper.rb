@@ -37,11 +37,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each) do
-    DatabaseCleaner.strategy = :truncation, {except: %w(translations enumrecord)}
+    DatabaseCleaner.strategy = :truncation, { except: %w(translations enumrecord) }
   end
 
   config.before(:each, js: true) do
-    DatabaseCleaner.strategy = :truncation, {except: %w(translations enumrecord)}
+    DatabaseCleaner.strategy = :truncation, { except: %w(translations enumrecord) }
   end
 
   config.before(:each) do
