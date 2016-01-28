@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'View equipments' do
+feature 'Destroy setup_type' do
   let!(:user) { FactoryGirl.create(:user, login: 'user') }
   let!(:admin_role) { FactoryGirl.create(:admin_role) }
   let!(:role_assignment) do
@@ -11,21 +11,23 @@ feature 'View equipments' do
     )
   end
 
-  let!(:equipment_type) { FactoryGirl.create(:equipment_type) }
+  let!(:setup_type) { FactoryGirl.create(:setup_type) }
 
   before do
     login_as(user)
   end
 
   context 'main' do
-    scenario 'show equipments', js: true do
+    scenario 'destroy setup_type and refresh table', js: true do
       visit '/'
       click_link 'Settings'
       click_link 'System Settings'
-      click_link 'Users'
+      click_link 'Room Setups'
+      find('tr', text: 'Setup Type A').click
+      find('.model-delete-button').click
+      click_button 'Confirm'
 
-      expect(page).to have_content('user Admin')
-      expect(page).to have_content('user1 Admin, Planner')
+      expect(page).not_to have_content('Setup Type A')
     end
   end
 end
