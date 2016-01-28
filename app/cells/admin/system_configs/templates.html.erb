@@ -4,7 +4,7 @@
 
 <script type="text/template" id="config-users-template">
     <%= render_cell "admin/user_list", :display, :pager => "user-pager" %>
-    <%= render_cell "admin/user_list", :javascript, 
+    <%= render_cell "admin/user_list", :javascript,
         :caption => "submenu-users",
         :pager => "#user-pager",
         :selectNotifyMethod => "UserMgmtApp.UserManagement.showDetails",
@@ -112,7 +112,7 @@
     <p><%= t 'email-addresses-setup-intro' %></p>
     <div class="bs-callout bs-callout-info">
         <h4><%= t 'hint' %></h4>
-        <%= t 'email-addresses-setup-hint' %>    
+        <%= t 'email-addresses-setup-hint' %>
     </div>
     <dl class="dl-horizontal">
         {{ if (typeof id != 'undefined') { }}

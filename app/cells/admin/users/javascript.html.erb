@@ -3,7 +3,7 @@
 UserMgmtApp = new Backbone.Marionette.Application();
 
 UserMgmtApp.UserManagement = (function(Backbone){
-    
+
     Backbone.Form.editors.List.Modal.ModalAdapter = Backbone.BootstrapModal;
     var roles = <%= [].concat(Role.find(:all).collect {|p| {'val' => p.id, 'label' => p.title}}).to_json.html_safe %>;
 
@@ -13,53 +13,54 @@ UserMgmtApp.UserManagement = (function(Backbone){
             email   : { type : 'Text', title : '<%= t "email" %>' },
             password : { type : 'Password', title : '<%= t "user-password" %>'},
             password_confirmation : { type : 'Password', title : '<%= t "user-password-again" %>'},
-            roles : { type : 'List',
-                        title : '<%= t "roles" %>',
-                        itemToString : function(item) {
-                                            var r = _.find(roles, function(v) { return v.val == item.id;});
-                                            return r.label;
-                                        },
-                        itemType : 'Object',
-                        subSchema : {
-                            id : { 
-                                    title : '<%= t "user-role" %>',
-                                    type : 'Select',
-                                    options : roles 
-                            }
-                        }
+            roles : {
+                type : 'List',
+                title : '<%= t "roles" %>',
+                itemToString : function(item) {
+                    var r = _.find(roles, function(v) { return v.val == item.id;});
+                    return r.label;
+                },
+                itemType : 'Object',
+                subSchema : {
+                    id : {
+                        title : '<%= t "user-role" %>',
+                        type : 'Select',
+                        options : roles
                     }
+                }
+            }
 
         },
-        
+
         urlRoot : "<%= baseUri + '/users/admin' %>"
     });
 
     return {
-        
+
         showDetails : function(id) {
             mdl = new UserMdl();
             mdl.fetch({
                 url : "<%= baseUri + '/users/admin/' %>" + id + '.json',
             });
 
-            return mdl;            
+            return mdl;
         },
-        
+
         clearDetails : function() {
-            
+
         },
-        
+
         UserMdl : UserMdl,
-        
+
         init : function(options) {
             // new Workspace();
         }
     }
-    
+
 })(Backbone);
 
 /*
- * 
+ *
  */
 jQuery(document).ready(function() {
     UserMgmtApp.addInitializer(UserMgmtApp.UserManagement.init);
