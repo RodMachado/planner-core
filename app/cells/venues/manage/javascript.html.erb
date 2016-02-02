@@ -10,7 +10,7 @@ VenueApp.VenueManagement = (function(Backbone){
 
     Venue = Backbone.DeepModel.extend({
         schema : {
-            name : { type : 'Text', title : '<%= t "name" %>' },
+            name : { type : 'Text', title : '<%= t "name" %>', validators: ['required'] },
             sort_order : { type : 'Number', title : '<%= t "sort-order" %>' },
             postal_address : { type : 'Object',
                 subSchema : {

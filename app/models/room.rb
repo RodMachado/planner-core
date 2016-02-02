@@ -2,16 +2,16 @@ class Room < ActiveRecord::Base
   attr_accessible :name, :purpose, :comment, :venue_id, :lock_version, :sort_order
 
   include RankedModel
-  ranks :sort_order, :with_same => :venue_id 
-  
+  ranks :sort_order, :with_same => :venue_id
+
   default_scope order('rooms.sort_order asc, rooms.name asc')
-  
+
   belongs_to  :venue
-  
+
   # this is a many to many
   has_many :room_item_assignments, :dependent => :destroy do
     def day(d) # get the room item assignments for the given day if the day parameter is used
-      find(:all, 
+      find(:all,
         :include => [:programme_item, :time_slot],
         :conditions => ['day = ?', d], :joins => :time_slot, :order => 'time_slots.start asc')
     end
@@ -22,14 +22,14 @@ class Room < ActiveRecord::Base
   has_many :room_setups
   has_many :setup_types, :through => :room_setups
   belongs_to :room_setup, foreign_key: "setup_id"
-  
+
   has_one :publication, :foreign_key => :original_id, :as => :original
   has_one :published, :through => :publication,
           :source => :published,
           :source_type => 'PublishedRoom'
 
   audited :associated_with => :venue, :allow_mass_assignment => true
-  
+
   has_many :equipment
 
   def removeAllTimes()
