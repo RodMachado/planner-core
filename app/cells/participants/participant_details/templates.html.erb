@@ -21,7 +21,7 @@
             <div id="tags-view"></div>
         </div>
         <div class="tab-pane " id="surveys-tab">
-            <%= render_cell "participants/survey_review", :tab_display %>            
+            <%= render_cell "participants/survey_review", :tab_display %>
         </div>
         <div class="tab-pane" id="availability-tab">
             <section>
@@ -56,7 +56,7 @@
             <div class="col-md-3 col-xs-12">
                 <div id="phone-control-div"></div>
                 <div id="phone-region-div"></div>
-            </div>    
+            </div>
         </div>
     </section>
 </script>
@@ -167,10 +167,10 @@
 </script>
 
 <script type="text/template" id="registration-view-template">
-    <div class="col-md-4" id="registration-view-details">  
-        <h5><%= t "registration"%> <i class="glyphicon glyphicon-info-sign bpopover" title="<%= t "registration"%>" data-toggle="popover" data-trigger="hover"  data-content="<%= t "registration-help" %>"></i></h5>  
+    <div class="col-md-4" id="registration-view-details">
+        <h5><%= t "registration"%> <i class="glyphicon glyphicon-info-sign bpopover" title="<%= t "registration"%>" data-toggle="popover" data-trigger="hover"  data-content="<%= t "registration-help" %>"></i></h5>
         {{ if (typeof id != 'undefined') { }}
-            
+
             <button class="model-edit-button btn btn-primary btn-xs pull-right"><%= t "edit" %></button>
             <dl class="dl-horizontal-small dt50">
                 <dt><%= t "reg-number" %></dt>
@@ -181,13 +181,13 @@
                 <dd>{{= registered ? '<%= t "yes" %>' : '<%= t "no" %>' }}</dd>
                 <dt class="dt-breaking"><%= t "can-share-details" %> <i class="glyphicon glyphicon-info-sign bpopover" data-toggle="popover" data-trigger="hover" title="<%= t "can-share-details" %>" data-content="<%= t 'can-share-details-hint' %>"></i></dt>
                 <dd>{{= can_share ? '<%= t "yes" %>' : '<%= t "no" %>' }}</dd>
-            </dl>       
+            </dl>
         {{ } else { }}
             <%= t "no-registration-details" %>
             <button class="model-new-button btn btn-primary btn-xs pull-right">
                 <i class="glyphicon glyphicon-pencil"></i>
             </button>
-            
+
         {{ }; }}
     </div>
 </script>
@@ -200,14 +200,14 @@
             {{ if (first_name || last_name) { }}
                 <strong>{{= prefix ? prefix : "" }} {{= first_name ? first_name : "" }} {{= last_name ? last_name : "" }} {{= suffix ? suffix : "" }}</strong>
                 <br>
-            {{ } }}  
-            {{ if (typeof pseudonym != 'undefined') { }}  
+            {{ } }}
+            {{ if (typeof pseudonym != 'undefined') { }}
                 {{ if (pseudonym.first_name || pseudonym.last_name) { }}
                     <strong>{{= pseudonym.prefix ? pseudonym.prefix : "" }} {{= pseudonym.first_name ? pseudonym.first_name : "" }} {{= pseudonym.last_name ? pseudonym.last_name : "" }} {{= pseudonym.suffix ? pseudonym.suffix : "" }}</strong>
                     <span class="minor-text">(<%= t "published-name" %>)</span>
                     <br>
-                {{ } }}    
-            {{ } }}    
+                {{ } }}
+            {{ } }}
             {{= job_title ? job_title : '<span class="minor-text"><%= t "no-job-title-specified" %></span>' }}<br>
             {{= company ? company : '<span class="minor-text"><%= t "no-company-specified" %></span>' }}
         </p>
@@ -232,10 +232,10 @@
                     {{ } else if (acceptance_status_name == 'Declined')  { }}
                     <dd><span class="label label-danger"><span class="glyphicon glyphicon-remove"></span> <%= t "person-acceptance-declined" %></span></dd>
                     {{ } else if ((acceptance_status_name == 'Unknown') || (acceptance_status_name == 'Probable'))  { }}
-                    <dd><span class="label label-warning"> <%= t "person-acceptance-unknown" %></span></dd>                    
+                    <dd><span class="label label-warning"> <%= t "person-acceptance-unknown" %></span></dd>
                     {{ } else { }}
                     <dd>{{= acceptance_status_name ? acceptance_status_name : "&nbsp;"}}</dd>
-                {{ } }}    
+                {{ } }}
                 <dt><%= t "invitation-category" %></dt>
                 <dd>{{= invitation_category_name ? invitation_category_name : "&nbsp;"}}</dd>
                 <dt><%= t "survey-key" %></dt>
@@ -347,7 +347,7 @@
 <script type="text/template" id="email-view-template">
 <div>
     <div class="contact-details-div">
-        
+
             <button class="model-delete-button btn btn-primary btn-xs pull-right">
                 <i class="glyphicon glyphicon-trash"></i>
             </button>
@@ -361,7 +361,7 @@
                         {{= email ? "<a href='mailto:" + email + "'>" + email + "</a>" : "&nbsp;" }}
                     </dd>
                 </dl> </small>
-        
+
     </div>
 </div>
 </script>
@@ -369,7 +369,7 @@
 
 <script type="text/template" id="address-view-template">
     <div class="contact-details-div">
-            
+
             <button class="model-delete-button btn btn-primary btn-xs pull-right">
                 <i class="glyphicon glyphicon-trash"></i>
             </button>
@@ -385,14 +385,14 @@
                     <dd>
                         {{= line1 ? line1 : "&nbsp;" }}
                     </dd>
-                    {{ if (line2) { }}                    
+                    {{ if (line2) { }}
                         <dt>
                             <%= t "line2" %>
                         </dt>
                         <dd>
                             {{= line2 ? line2 : "&nbsp;" }}
                         </dd>
-                    {{ } }}    
+                    {{ } }}
                     {{ if (line3) { }}
                         <dt>
                             <%= t "line3" %>
@@ -425,9 +425,9 @@
                     <dd>
                         {{= country ? country : "&nbsp;" }}
                     </dd>
-                </dl> 
+                </dl>
             </small>
-        
+
     </div>
 </script>
 

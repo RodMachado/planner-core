@@ -3,22 +3,22 @@ class Person < ActiveRecord::Base
                   :invitation_category_id, :pseudonym_attributes, :acceptance_status_id, :invitestatus_id,
                   :postal_addresses_attributes, :email_addresses_attributes, :phone_numbers_attributes, :registrationDetail_attributes,
                   :prefix
-                  
+
   attr_accessor :details
 
   acts_as_taggable
-  
+
   # Put in audit for people
   audited :allow_mass_assignment => true
-  
+
   has_many  :addresses, :dependent => :delete_all
-  
+
   has_many  :postal_addresses, :through => :addresses,
-            :source => :addressable, 
+            :source => :addressable,
             :source_type => 'PostalAddress'
-  
-  has_many  :email_addresses, :through => :addresses, 
-            :source => :addressable, 
+
+  has_many  :email_addresses, :through => :addresses,
+            :source => :addressable,
             :source_type => 'EmailAddress'
 
   has_many :phone_numbers, :through => :addresses,
@@ -36,7 +36,7 @@ class Person < ActiveRecord::Base
   has_one :pseudonym
   has_one :bio_image, :dependent => :delete
   has_one :edited_bio, :dependent => :delete
-  
+
   has_one :peoplesource, :dependent => :delete
   has_one :datasource, :through => :peoplesource
 
@@ -48,7 +48,7 @@ class Person < ActiveRecord::Base
   def by_last_name
     order("last_name ASC")
   end
-  
+
   # ----------------------------------------------------------------------------------------------
   #
   # TODO - conference specific data - need to change so that the access is scoped by conference id
@@ -59,15 +59,15 @@ class Person < ActiveRecord::Base
   has_one :person_constraints, :dependent => :delete # THis is the max items per day & conference
 
   has_many  :exclusions, :dependent => :delete_all
-  
-  has_many  :excluded_people, :through => :exclusions, 
+
+  has_many  :excluded_people, :through => :exclusions,
             :source => :excludable,
             :source_type => 'Person' do
               def find_by_source(s)
                 find(:all, :conditions => ['source = ?', s])
               end
             end
-  
+
   has_many  :excluded_periods, :through => :exclusions,
             :source => :excludable,
             :source_type => 'TimeSlot' do
@@ -75,7 +75,7 @@ class Person < ActiveRecord::Base
                 find(:all, :conditions => ['source = ?', s])
               end
             end
-  
+
   has_many  :excluded_items, :through => :exclusions,
             :source => :excludable,
             :source_type => "ProgrammeItem" do
@@ -83,10 +83,10 @@ class Person < ActiveRecord::Base
                 find(:all, :conditions => ['source = ?', s])
               end
             end
-  
+
   has_many  :programmeItemAssignments, :dependent => :destroy
   has_many  :programmeItems, :through => :programmeItemAssignments
-  
+
   has_many  :publishedProgrammeItemAssignments #, :dependent => :destroy # NOTE - we let the publish mechanism to the destroy so that the update service knows what is happening
   has_many  :published_programme_items, :through => :publishedProgrammeItemAssignments
 
@@ -98,33 +98,33 @@ class Person < ActiveRecord::Base
   has_many  :person_mailing_assignments
   has_many  :mailings, :through => :person_mailing_assignments
   has_many  :mail_histories #, :through => :person_mailing_assignments
-  
+
   belongs_to      :invitation_category # TODO - SCOPE
-  
+
   has_one      :person_con_state # TODO - SCOPE
-  
+
   # ----------------------------------------------------------------------------------------------
   def acceptance_status_id=(arg)
     self.person_con_state = PersonConState.new if !self.person_con_state
     self.person_con_state.acceptance_status_id = arg
     self.person_con_state.save! if self.id && self.id > 0
   end
-  
+
   def invitestatus_id=(arg)
     self.person_con_state = PersonConState.new if !self.person_con_state
     self.person_con_state.invitestatus_id = arg
     self.person_con_state.save! if self.id && self.id > 0
   end
-  
-  
+
+
   def acceptance_status
     if person_con_state
       person_con_state.acceptance_status
     else
       nil
     end
-  end  
-  
+  end
+
   def acceptance_status=(arg)
     self.person_con_state = PersonConState.new if !self.person_con_state
     self.person_con_state.acceptance_status = arg
@@ -137,18 +137,18 @@ class Person < ActiveRecord::Base
     else
       nil
     end
-  end  
-  
+  end
+
   def invitestatus=(arg)
     self.person_con_state = PersonConState.new if !self.person_con_state
     self.person_con_state.invitestatus = arg
     self.person_con_state.save! if self.id && self.id > 0
-  end  
-  
+  end
+
   def getFullName()
     [self.prefix, self.first_name,self.last_name,self.suffix].compact.join(' ').strip
   end
-  
+
   # check that the person has not been assigned to program items, if they have then return an error and do not delete
   def check_if_assigned
     if ProgrammeItemAssignment.where(person_id: id).count > 0 # TODO - scope for conference
@@ -180,9 +180,9 @@ class Person < ActiveRecord::Base
   def facebook
     edited_bio ? edited_bio.facebook : ""
   end
-  
+
   def updatePhone(new_phone, phonetype)
-    
+
     # first find the existing phone of the given type
     # if found update it
     # otherwise create a new instance
@@ -196,9 +196,9 @@ class Person < ActiveRecord::Base
       phone.phone_type = PhoneTypes[phonetype]
       self.save!
     end
-    
+
   end
-  
+
   #
   #
   #
@@ -219,13 +219,13 @@ class Person < ActiveRecord::Base
       return false
     end
   end
-  
+
   #
   #
   #
   def emailMatch?(email)
     e = getDefaultEmail()
-    
+
     return e ? e.email == email : false
   end
 
@@ -235,9 +235,9 @@ class Person < ActiveRecord::Base
       e.isdefault = false
       e.save!
     end
- 
-    e = self.email_addresses.new :email => email, :isdefault => true 
-   
+
+    e = self.email_addresses.new :email => email, :isdefault => true
+
     self.save!
   end
 
@@ -247,13 +247,13 @@ class Person < ActiveRecord::Base
   def updateDefaultAddress(new_line1, new_city, new_state, new_postcode, new_country)
     # We will create a new address object and make that the default (so the old one will no longer be used but will still be in the list)
     address = getDefaultPostalAddress
-    
+
     if address
       address.isdefault = false
       address.save!
     end
-    
-    postalAddress = self.postal_addresses.new :line1 => new_line1, :city => new_city, :state => new_state, :postcode => new_postcode, :country => new_country, :isdefault => true 
+
+    postalAddress = self.postal_addresses.new :line1 => new_line1, :city => new_city, :state => new_state, :postcode => new_postcode, :country => new_country, :isdefault => true
 
     self.save!
   end
@@ -264,7 +264,7 @@ class Person < ActiveRecord::Base
   def replaceDefaultAddress(new_line1, new_line2, new_city, new_state, new_postcode, new_country)
     # We will create a new address object and make that the default (so the old one will no longer be used but will still be in the list)
     address = getDefaultPostalAddress
-    
+
     if address
       address.line1 = new_line1
       address.line2 = new_line2
@@ -274,13 +274,13 @@ class Person < ActiveRecord::Base
       address.country = new_country
       address.save!
     else
-      postalAddress = self.postal_addresses.new :line1 => new_line1, 
-                                    :line2 => new_line2, 
-                                    :city => new_city, 
-                                    :state => new_state, 
-                                    :postcode => new_postcode, 
-                                    :country => new_country, 
-                                    :isdefault => true 
+      postalAddress = self.postal_addresses.new :line1 => new_line1,
+                                    :line2 => new_line2,
+                                    :city => new_city,
+                                    :state => new_state,
+                                    :postcode => new_postcode,
+                                    :country => new_country,
+                                    :isdefault => true
     end
 
     self.save!
@@ -293,7 +293,7 @@ class Person < ActiveRecord::Base
     possibleAddresses = postal_addresses
     theAddress = nil
     if possibleAddresses
-      possibleAddresses.each do |addr| 
+      possibleAddresses.each do |addr|
         if addr.isdefault
           theAddress = addr
         else # if the address is empty we want to take the first one (unless there is a default)
@@ -313,7 +313,7 @@ class Person < ActiveRecord::Base
     possibleEmails = email_addresses
     theEmail = nil
     if possibleEmails
-      possibleEmails.each do |email| 
+      possibleEmails.each do |email|
         if email.isdefault
           theEmail = email
         else # if the email is empty we want to take the first one (unless there is a default)
@@ -325,7 +325,7 @@ class Person < ActiveRecord::Base
     end
     return theEmail
   end
-    
+
   def getFullPublicationName
    # if we set the pseudonym in people table, use that
    if (self.pseudonym != nil)
@@ -338,7 +338,7 @@ class Person < ActiveRecord::Base
         return [self.prefix, self.first_name,self.last_name,self.suffix].compact.join(' ').strip
     end
   end
-  
+
   def getFullPublicationNameSansPrefix
    # if we set the pseudonym in people table, use that
    if (self.pseudonym != nil)
@@ -351,41 +351,41 @@ class Person < ActiveRecord::Base
         return [self.first_name,self.last_name,self.suffix].compact.join(' ').strip
     end
   end
-  
+
   def pubPrefix
     return self.pseudonym.prefix if (self.pseudonym != nil) && !(self.pseudonym.prefix && self.pseudonym.prefix.empty?)
-    
+
     return prefix ? prefix : ''
   end
 
   def pubFirstName
     return self.pseudonym.first_name if (self.pseudonym != nil) && !(self.pseudonym.first_name && self.pseudonym.first_name.empty?)
-    
+
     return first_name
   end
 
   def pubLastName
     return self.pseudonym.last_name if (self.pseudonym != nil) && !(self.pseudonym.last_name && self.pseudonym.last_name.empty?)
-    
+
     return last_name
   end
-  
+
   def pubSuffix
     return self.pseudonym.suffix if (self.pseudonym != nil) && !(self.pseudonym.suffix && self.pseudonym.suffix.empty?)
-    
+
     return suffix
   end
-  
+
   def GetSurveyBio
     response = SurveyService.getSurveyBio id # TODO - there can be more than one survey with a BIO
-    
+
     if response
       return response.response
     else
       return ''
     end
   end
-  
+
   def removePostalAddress(address)
      postal_addresses.delete(address) # remove it from the person
      # and then make sure that it is not used by another person
@@ -393,7 +393,7 @@ class Person < ActiveRecord::Base
        address.destroy
      end
   end
-  
+
   def removeEmailAddress(address)
      email_addresses.delete(address) # remove it from the person
      # and then make sure that it is not used by another person
@@ -405,7 +405,7 @@ class Person < ActiveRecord::Base
   def removeAllAddresses()
     # Get the addresses and if they are not reference by other people the get rid of them...
     postalAddresses = self.postal_addresses
-    
+
     if (postalAddresses)
       postalAddresses.each do |address|
         self.removePostalAddress(address)

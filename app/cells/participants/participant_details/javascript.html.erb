@@ -33,11 +33,11 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/postal_addresses' %>"
     });
-    
+
     AddressCollection = Backbone.Collection.extend({
         model : Address
     });
-    
+
     EmailAddress = Backbone.Model.extend({
         schema : {
             email : { type : 'Text', title : '<%= t "email" %>'},
@@ -45,11 +45,11 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/email_addresses' %>"
     });
-    
+
     EmailCollection = Backbone.Collection.extend({
         model : EmailAddress
     });
-    
+
     PhoneNumber = Backbone.Model.extend({
         schema : {
             number : { type : 'Text', title : '<%= t "phone-number" %>'},
@@ -57,7 +57,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/phone_numbers' %>"
     });
-    
+
     PhoneCollection = Backbone.Collection.extend({
         model : PhoneNumber
     });
@@ -74,7 +74,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot: "<%= baseUri + '/registrationDetails' %>"
     });
-    
+
     //
     Pseudonym = Backbone.Model.extend({
         schema : {
@@ -84,7 +84,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             suffix  : { type : 'Text', title : '<%= t "suffix" %>'},
         }
     });
-    
+
     InviteDetails = Backbone.DeepModel.extend({
         schema : {
             prefix  : { type : 'Text', title : '<%= t "prefix" %>', editorAttrs : { placeholder : '<%= t "prefix" %>' }},
@@ -119,7 +119,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/edited_bios' %>"
     });
-    
+
     BioPicture = Backbone.Model.extend({
         schema : {
             bio_picture : { type : 'CLImage', title : '<%= (I18n.t "bio-image").html_safe %>', help: '<%= (I18n.t "bio-image-upload-help").html_safe %>', help_placement: 'bottom' ,
@@ -128,21 +128,21 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/bio_images' %>"
     });
-    
+
     //
     ProgramItem = Backbone.DeepModel.extend({
     });
     ProgramItemCollection = Backbone.Collection.extend({
         model : ProgramItem
     });
-    
+
     //
     TagContext = Backbone.Model.extend({
     });
     TagContextCollection = Backbone.Collection.extend({
         model : TagContext
     });
-    
+
     //
     TagFilter = Backbone.Model.extend({
         // Context name & Tag name
@@ -151,7 +151,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
     TagFilterCollection = Backbone.Collection.extend({
         model : TagFilter
     });
-    
+
     //
     AvailabilityDateModel = Backbone.RelationalModel.extend({
         schema : {
@@ -204,11 +204,11 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         ]
     });
     /******************************************************
-     * 
+     *
      */
     PersonTabLayout = Backbone.Marionette.Layout.extend({
         template : "#person-tab-layout-template",
-        
+
         regions : {
             registration    : "#registration-tab",
             contacts        : "#contacts-tab",
@@ -226,7 +226,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 
     AddressLayout = Backbone.Marionette.Layout.extend({
         template: "#address-layout-template",
-        
+
         regions : {
             postalControlRegion: "#postal-control-div",
             postalRegion: "#postal-region-div",
@@ -236,19 +236,19 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             phoneRegion: "#phone-region-div",
         },
     });
-    
+
     SummaryLayout = Backbone.Marionette.Layout.extend({
         template: "#summary-layout-template",
-        
+
         regions : {
             identity    : "#id-region-div",
             registration: "#reg-region-div"
         },
     });
-    
+
     PublishedInfoLayout = Backbone.Marionette.Layout.extend({
         template: "#published-info-layout-template",
-        
+
         regions : {
             picture : "#picture-region-div",
             bio     : "#bio-region-div"
@@ -262,7 +262,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 
     function clearRegDetails() {
         $('#selected-participant').text("");
-        
+
         if (personTabLayout) {
             personTabLayout.registration.close();
             personTabLayout.contacts.close();
@@ -276,16 +276,16 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             personTabLayout.exclusion_times.close();
             personTabLayout.items.close();
         };
-        
+
         eventAggregator.off("refreshTagList", syncModel);
-        
+
         _.invoke(tabContent, 'clear' );
     };
 
     function syncModel() {
         this.fetch({async : false});
     };
-    
+
     function getPersonName(data) {
         var res = "";
 
@@ -318,9 +318,9 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                 res += data['person[pseudonym_attributes][suffix]'];
             };
         };
-        
+
         var name = (data['person[prefix]'] + ' ' + data['person[first_name]'] + ' ' + data['person[last_name]'] + ' ' + data['person[suffix]']).trim();
-                    
+
         if (res.length > 0) {
             if (name.length > 0) {
                 res += " (" +  name + ")";
@@ -338,7 +338,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 
         summaryLayout = new SummaryLayout();
         personTabLayout.invite.show(summaryLayout);
-        
+
         SurveyReviewApp.Reviews.showSurveySelector(id);
 
         jQuery("#mail-history").mailHistoryBootstrapTable('personHistory',{
@@ -357,7 +357,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             deleteTitle : '<%= I18n.t "delete-confirmation" %> ',
             deleteMessage : '<%= (I18n.t "confirm-that-you-really-want-to-delete").html_safe %>'
         });
-        
+
         var invite_details = TabUtils.createTabContent({
             modelType : InviteDetails,
             modal_template : "#person-form-template",
@@ -393,7 +393,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 
         publishedInfoLayout = new PublishedInfoLayout();
         personTabLayout.published_info.show(publishedInfoLayout);
-        
+
         tabContent.push( TabUtils.createTabContent({
             modelType : BioDetails,
             url : "<%= baseUri + '/participants/' %>" + id + "/edited_bios.json",
@@ -406,7 +406,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             deleteTitle : '<%= I18n.t "delete-confirmation" %> ',
             deleteMessage : '<%= (I18n.t "confirm-that-you-really-want-to-delete").html_safe %>'
         }) );
-        
+
         tabContent.push( TabUtils.createTabContent({
             modelType : BioPicture,
             url : "<%= baseUri + '/participants/' %>" + id + "/bio_images.json",
@@ -419,7 +419,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             deleteTitle : '<%= I18n.t "delete-confirmation" %> ',
             deleteMessage : '<%= (I18n.t "confirm-that-you-really-want-to-delete").html_safe %>'
         }) );
-        
+
         TabUtils.createTabListContent({
             collectionType : ProgramItemCollection,
             url : "<%= baseUri + '/participants/' %>" + id + "/programme_items.json",
@@ -454,7 +454,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             deleteMessage : '<%= (I18n.t "confirm-that-you-really-want-to-delete").html_safe %>'
         }) );
 
-        
+
         exclusions = new Exclusions();
         exclusions.fetch({
             url : "<%= baseUri + '/participants/' %>" + id + "/availabilities.json",
@@ -462,12 +462,12 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                 TabUtils.createTabListContent({
                     collection : obj.get('items'),
                     template : "#item-exclusion-view-template",
-                    region : personTabLayout.exclusion_items 
+                    region : personTabLayout.exclusion_items
                 });
                 TabUtils.createTabListContent({
                     collection : obj.get('times'),
                     template : "#time-exclusion-view-template",
-                    region : personTabLayout.exclusion_times 
+                    region : personTabLayout.exclusion_times
                 });
             }
         });
@@ -495,7 +495,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             editTitle : '<%= t "edit-address" %>',
         }) );
 
-        
+
         TabUtils.createTabControl({
             template : "#phone-control-template",
             modelType : PhoneNumber,
@@ -516,12 +516,12 @@ ParticipantApp.PeopleManagement = (function(Backbone){
         }) );
 
         TabUtils.createTabControl({
-            template : "#email-control-template", 
+            template : "#email-control-template",
             modelType : EmailAddress,
             id : id,
             id_name : 'person_id',
             view_refresh_event : "address:refresh",
-            modal_create_title : '<%= t "create-email" %>',    
+            modal_create_title : '<%= t "create-email" %>',
             region : addressLayout.emailControlRegion
         });
         tabLists.push( TabUtils.createTabListContent({
@@ -534,7 +534,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             newTitle : '<%= t "create-email" %>',
             editTitle : '<%= t "edit-email" %>',
         }) );
-        
+
         eventAggregator.on("refreshTagList", syncModel, invite_details);
 
         //initialize the popovers
@@ -550,20 +550,20 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             id : id,
             model : invite_details
         });
-        
+
         return invite_details;
     };
-    
+
     var filterCol = null;
 
     //
     //
-    //    
+    //
     return {
         addSelectCallback : function(func) {
             selectCallbacks.add(func);
         },
-        
+
         init : function() {
             personTabLayout = new PersonTabLayout();
             personTabLayout.render();
@@ -581,14 +581,14 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                     ParticipantApp.PeopleManagement.refreshTable();
                 },
             });
-            
+
             $('#participant-tabs').tabdrop({
                 text : "..."
             });
         },
-        
+
         InviteDetails : InviteDetails,
-        
+
         showDetails : function(id) {
             clearRegDetails();
             return showRegDetails(id);
@@ -600,7 +600,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
             if (!filters) {
                 filters = new TagFilterCollection();
             }
-            
+
             if (!filterCol) {
                 filterCol = TabUtils.createTabListContent({
                     collection : filters,
@@ -613,9 +613,9 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                     },
                     view_attributes : { "style" : "display : inline" },
                 });
-                
+
             }
-            
+
             filters.add(
                 new TagFilter({
                     context : context,
@@ -626,7 +626,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 
         getTagQuery : function() {
             var tagQuery = "";
-            
+
             // go through the filters are create the query for the tags ...
             if (filters) {
                 // convert the filters into an associative array and then build the query...
@@ -636,7 +636,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                     if (!filterArray[ctx]) {
                         filterArray[ctx] = filters.at(index).get('name');
                     } else {
-                        filterArray[ctx] += ',' + filters.at(index).get('name');                    
+                        filterArray[ctx] += ',' + filters.at(index).get('name');
                     };
                 });
                 var str = "";
@@ -650,10 +650,10 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                 });
                 tagQuery = str;
             }
-            
+
             return tagQuery;
         },
-        
+
         refreshTable : function() {
             // get the tags etc from the view and create the query
             var tagQuery = ParticipantApp.PeopleManagement.getTagQuery();
@@ -661,7 +661,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
                 tagQuery : tagQuery
             });
         },
-        
+
         showEmail : function(row, data) {
             modal = new AppUtils.InfoModal({
                             content : data.content,
@@ -673,7 +673,7 @@ ParticipantApp.PeopleManagement = (function(Backbone){
 })(Backbone);
 
 /*
- * 
+ *
  */
 jQuery(document).ready(function() {
     ParticipantApp.addInitializer(ParticipantApp.PeopleManagement.init);

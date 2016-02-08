@@ -3,11 +3,11 @@
 ConfigApp = new Backbone.Marionette.Application();
 
 ConfigApp.ConfigManagement = (function(Backbone){
-    
+
     var tzOffset = <%= Time.zone.parse(@start_date.start_date.to_s).utc_offset/60 %>;
 
     TitleMdl =  Backbone.Model.extend({});
-    
+
     InviteCategory = Backbone.Model.extend({
         schema : {
             name     : { type : 'Text', title : '<%= t "invite-category-name" %>' },
@@ -15,7 +15,7 @@ ConfigApp.ConfigManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/invitation_categories' %>"
     });
-    
+
     InviteCategoryCollection = Backbone.Collection.extend({
         model : InviteCategory
     });
@@ -23,7 +23,7 @@ ConfigApp.ConfigManagement = (function(Backbone){
     SiteConfig = Backbone.Model.extend({
         schema : {
             name                : { type : 'Text', title : '<%= t "conference-name" %>' },
-            time_zone           : { type : 'Select', title : '<%= t "conference-time-zone" %>', 
+            time_zone           : { type : 'Select', title : '<%= t "conference-time-zone" %>',
                                     options : <%= time_zone_options_for_select().to_json.html_safe %> },
             start_date          : { type : 'Datetime', title : '<%= t "conference-start-date" %>',
                                     tz_offset : function() { return tzOffset; },
@@ -44,18 +44,18 @@ ConfigApp.ConfigManagement = (function(Backbone){
                                     // to be <= number_of_days
                                     },
             print_time_format   : { type : 'Select', title : '<%= t "time-format-for-publications" %>',
-                                    options : [{val: '24', label: '24 hour'},{val: '12', label: '12 hour'}] 
+                                    options : [{val: '24', label: '24 hour'},{val: '12', label: '12 hour'}]
                                   }
             // languages           : { type : 'Text', title : '<%= t "supported-languages" %>'},
         },
-        
+
         data : {
             start_date  : new Date()
         },
-        
+
         urlRoot : "<%= baseUri + '/site_configs' %>"
     });
-    
+
     TagContext = Backbone.Model.extend({
         schema : {
             name     : { type : 'Text', title : '<%= t "tag-context-name" %>' },
@@ -63,36 +63,36 @@ ConfigApp.ConfigManagement = (function(Backbone){
         },
         urlRoot : "<%= baseUri + '/tag_contexts' %>"
     });
-    
+
     TagContextCollection = Backbone.Collection.extend({
         model : TagContext
     });
-    
+
     ConfigLayout = Backbone.Marionette.Layout.extend({
         template: "#config-list-layout-template",
-        
+
         regions : {
             titleRegion     : "#config-title-div",
             controlRegion   : "#config-control-div",
             configRegion    : "#config-region-div",
         },
     });
-    
+
     TitleView = Backbone.Marionette.ItemView.extend({
         template: '#config-title-template'
     });
-    
+
     SiteConfigView = Marionette.ItemView.extend({
         template : '#site-config-view-template',
     });
-    
+
     var configRegion = new Backbone.Marionette.Region({
         el: "#config-area"
     });
 
 
     var tabLists = [];
-    
+
     function clearDetails() {
         _.invoke(tabLists, 'reset' );
     };
@@ -106,11 +106,11 @@ ConfigApp.ConfigManagement = (function(Backbone){
 
         invitation_category_config : function() {
             configRegion.close();
-            
+
             inviteLayout = new ConfigLayout();
             configRegion.show(inviteLayout);
             inviteLayout.titleRegion.show ( new TitleView({ model : new TitleMdl({ title : '<%= t "config-invitation-categories" %>' }) }) );
-            
+
             TabUtils.createTabControl({
                 template                : "#invite-category-control-template",
                 modelType               : InviteCategory,
@@ -118,7 +118,7 @@ ConfigApp.ConfigManagement = (function(Backbone){
                 modal_create_title      : '<%= t "create-invitation-category" %>',
                 region                  : inviteLayout.controlRegion,
             });
-            
+
             tabLists.push( AppUtils.createCollectionView({
                 url                     : "<%= baseUri + '/invitation_categories.json' %>",
                 collectionType          : InviteCategoryCollection,
@@ -135,11 +135,11 @@ ConfigApp.ConfigManagement = (function(Backbone){
 
         tag_context_config : function() {
             configRegion.close();
-            
+
             tagContextLayout = new ConfigLayout();
             configRegion.show(tagContextLayout);
             tagContextLayout.titleRegion.show ( new TitleView({ model : new TitleMdl({ title : '<%= t "config-tag-contexts" %>' }) }) );
-            
+
             TabUtils.createTabControl({
                 template                : "#tag-context-control-template",
                 modelType               : TagContext,
@@ -147,7 +147,7 @@ ConfigApp.ConfigManagement = (function(Backbone){
                 modal_create_title      : '<%= t "create-tag-context" %>',
                 region                  : tagContextLayout.controlRegion,
             });
-            
+
             tabLists.push( AppUtils.createCollectionView({
                 url                     : "<%= baseUri + '/tag_contexts.json' %>",
                 collectionType          : TagContextCollection,
@@ -161,17 +161,17 @@ ConfigApp.ConfigManagement = (function(Backbone){
                 modal_edit              : true
             }) );
         },
-        
+
         conference_config : function() {
             configRegion.close();
-            
+
             configLayout = new ConfigLayout();
             configRegion.show(configLayout);
-            
+
             var config = new SiteConfig();
             config.fetch({
                 success : function(mdl) {
-                    
+
                     var view = AppUtils.createEditItemView({
                         model           : mdl,
                         itemArea        : "#config-control-div",
@@ -187,21 +187,21 @@ ConfigApp.ConfigManagement = (function(Backbone){
     });
 
     /*
-     * 
+     *
      */
     return {
         configRegion : configRegion,
         ConfigLayout : ConfigLayout,
-         
+
         init : function(options) {
             new Workspace();
         }
     }
-    
+
 })(Backbone);
 
 /*
- * 
+ *
  */
 jQuery(document).ready(function() {
     ConfigApp.addInitializer(ConfigApp.ConfigManagement.init);

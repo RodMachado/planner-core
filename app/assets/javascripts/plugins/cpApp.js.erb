@@ -1,5 +1,5 @@
 /*
- * 
+ *
  */
 
 var AppUtils = (function(){
@@ -26,7 +26,7 @@ var AppUtils = (function(){
     };
 
    /*
-    * 
+    *
     */
     InfoModal = Backbone.View.extend({
         tagName: "div",
@@ -36,12 +36,12 @@ var AppUtils = (function(){
             "hidden.bs.modal"   : "hide",
             "keypress"          : "swallow"
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.template = _.template($('#modal-info-template').html());
         },
-        
+
         modalOptions: {
             backdrop: 'static',
         },
@@ -59,16 +59,16 @@ var AppUtils = (function(){
                 this.$el.find(".modal-body").append(this.options.content);
                 this.$el.find('.bpopover').popover({html : true});
             };
-            
+
             this.delegateEvents();
-            
+
             return this;
         },
-        
+
         swallow : function(e) {
             e.stopPropagation();
         },
-        
+
         submit : function(e) {
             if (e && e.type == "submit") {
                 e.preventDefault();
@@ -83,19 +83,19 @@ var AppUtils = (function(){
                 this.remove();
             };
         },
-        
+
         hide : function(e) {
             if (this.options.closeAction) {
                 this.options.closeAction(e);
             };
             this.unbind();
-            this.views = [];  
+            this.views = [];
             this.remove();
         }
     });
-    
+
     /*
-     * 
+     *
      */
     ConfirmModel = InfoModal.extend({
         initialize : function(options) {
@@ -103,9 +103,9 @@ var AppUtils = (function(){
             this.template = _.template($('#modal-confirm-template').html());
         }
     });
-    
+
     /*
-     * 
+     *
      */
     LeavePageModal = Backbone.View.extend({
         tagName: "div",
@@ -115,7 +115,7 @@ var AppUtils = (function(){
             "hidden": "hide",
             "click .abandon" : "abandon"
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.template = _.template($('#modal-leave-template').html());
@@ -124,7 +124,7 @@ var AppUtils = (function(){
         modalOptions: {
             backdrop: false,
         },
-        
+
         abandon : function() {
             if (this.options.abandonAction) {
                 this.options.abandonAction();
@@ -138,12 +138,12 @@ var AppUtils = (function(){
             })));
 
             this.delegateEvents();
-            
+
             this.$el.modal(this.modalOptions);
 
             return this;
         },
-        
+
         submit : function(e) {
             if (e && e.type == "submit") {
                 e.preventDefault();
@@ -153,16 +153,16 @@ var AppUtils = (function(){
             };
             this.remove();
         },
-        
+
         hide: function (e) {
             this.remove();
             this.unbind();
-            this.views = [];  
+            this.views = [];
         },
     });
-        
+
     /*
-     * 
+     *
      */
     PanelModal = InfoModal.extend({
         events: {
@@ -171,29 +171,29 @@ var AppUtils = (function(){
             "hide.bs.modal"     : "hideCheck",
             "hidden.bs.modal"   : "hide"
         },
-        
+
         hide: function (e) {
             if (this.options.closeAction) {
                 this.options.closeAction(e);
             };
-            
+
             iframes = this.$el.children('iframe'); //find(".modal-body").append(this.options.content);
             for (var i = 0; i < iframes.length; i++) {
                 iframes[i].parentNode.removeChild(iframes[i]);
             };
-            
+
             this.unbind();
-            this.views = [];  
+            this.views = [];
             this.remove();
         },
-        
+
         hideCheck : function(e) {
             // Check that we are allowed to close the dialog and if so continue with the close
             closeCheck = this.options.closeCheck;
             if (closeCheck && !this.checked) {
                 var changed = closeCheck();
                 var panel = this;
-                
+
                 if (changed) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -210,38 +210,38 @@ var AppUtils = (function(){
                 }
             };
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.template = _.template($('#modal-panel-template').html());
         },
-        
+
         render: function () {
             var url = this.options.url;
             Backbone.BootstrapModal.count++;
-            
+
             this.checked = false;
 
             this.$el.html($(this.template({
                 url : url,
                 title : this.options.title
             })));
-            
+
             this.$el.modal(this.modalOptions);
 
             if (this.options.content) {
                 this.$el.find(".modal-body").append(this.options.content);
                 this.$el.find('.bpopover').popover({html : true});
             }
-            
+
             this.delegateEvents();
-            
+
             return this;
         }
     });
 
     /*
-     * 
+     *
      */
     PlainPanelModal = InfoModal.extend({
         events: {
@@ -250,24 +250,24 @@ var AppUtils = (function(){
             "hide.bs.modal"     : "hideCheck",
             "hidden.bs.modal"   : "hide"
         },
-        
+
         hide: function (e) {
             if (this.options.closeAction) {
                 this.options.closeAction(e);
             };
-            
+
             this.unbind();
-            this.views = [];  
+            this.views = [];
             this.remove();
         },
-        
+
         hideCheck : function(e) {
             // Check that we are allowed to close the dialog and if so continue with the close
             closeCheck = this.options.closeCheck;
             if (closeCheck && !this.checked) {
                 var changed = closeCheck();
                 var panel = this;
-                
+
                 if (changed) {
                     e.preventDefault();
                     e.stopPropagation();
@@ -284,17 +284,17 @@ var AppUtils = (function(){
                 }
             };
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.template = _.template($('#modal-plain-panel-template').html());
         },
-        
+
         render: function (after_render) {
             var url = this.options.url;
             var that = this;
             Backbone.BootstrapModal.count++;
-            
+
             this.checked = false;
 
             $.ajax({
@@ -309,22 +309,22 @@ var AppUtils = (function(){
                     };
                 }
             });
-            
+
             this.$el.modal(this.modalOptions);
 
             if (this.options.content) {
                 this.$el.find(".modal-body").append(this.options.content);
                 this.$el.find('.bpopover').popover({html : true});
             }
-            
+
             this.delegateEvents();
-            
+
             return this;
         }
     });
 
     /*
-     * 
+     *
      */
     GenericModal = Backbone.View.extend({
         tagName: "div",
@@ -334,11 +334,11 @@ var AppUtils = (function(){
             "hidden": "close",
             "keypress" : "swallow"
         },
-        
+
         swallow : function(e) {
             e.stopPropagation();
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.template = _.template($('#modal-edit-template').html());
@@ -348,7 +348,7 @@ var AppUtils = (function(){
             backdrop: 'static',
             keyboard : false
         },
-        
+
         render: function () {
             var numModals = Backbone.BootstrapModal.count++;
 
@@ -361,33 +361,33 @@ var AppUtils = (function(){
             this.renderBody();
             this.$el.find(".modal-body").append(this.form.el);
             this.$el.find('.bpopover').popover({html : true});
-            
+
             this.delegateEvents();
 
             <!-- Force the focus to change to this dialog -->
             var e = jQuery.Event("keydown");
             e.which = 27; // # Some key code value
             $(document.activeElement).trigger(e);
-            
+
             this.$el.find("input").filter(':visible:first').focus();
-            
+
             return this;
         },
-        
+
         submit : function(e) {
             if (e && e.type == "submit") {
                 e.preventDefault();
                 e.stopPropagation();
             };
-            
+
             var errors = this.submitData();
-            
+
             if (! errors ) {
                 if (e.type != "hide") this.$el.modal("hide");
                 this.remove();
             }
         },
-        
+
         removeCK : function() {
             this.form.$el.find('.cke').each(function() {
                 try {
@@ -399,7 +399,7 @@ var AppUtils = (function(){
                 }
             });
         },
-        
+
         close: function (e) {
             this.removeCK();
             this.remove();
@@ -407,49 +407,49 @@ var AppUtils = (function(){
             this.views = [];
             Backbone.BootstrapModal.count--;
         },
-        
-        // over-ride this for the body of the form        
+
+        // over-ride this for the body of the form
         renderBody : function() {
         },
 
-        // over-ride for the actual data submission        
+        // over-ride for the actual data submission
         submitData : function() {
         }
-        
+
     });
-    
+
     /*
-     * 
+     *
      */
     FormModal = GenericModal.extend({
         renderBody : function() {
             this.form = this.options.form;
-            
+
             if (this.options.modal_template) {
                 this.form.template = _.template($(this.options.modal_template).html());
             };
-            
+
             this.form.render();
         },
-        
-        // over-ride for the actual data submission        
+
+        // over-ride for the actual data submission
         submitData : function() {
             // gather the data and update the underlying model etc.
             var errors = this.options.form.validate();
-            
+
             if (!errors) { // save if there are no errors
                 var refreshFn = this.options.refresh;
                 var refreshEvent = this.options.view_refresh_event;
                 var data = this.form.getValue();
                 var endPoint = this.options.endPoint;
-            
+
                 $.ajax({
                     url : endPoint,
                     type : 'POST',
                     data : data,
                     success : function() {
                         if (refreshEvent) {
-                            eventAggregator.trigger(refreshEvent); 
+                            eventAggregator.trigger(refreshEvent);
                         };
                         if (refreshFn) {
                             refreshFn(); // cause problem with templates used ???
@@ -457,43 +457,43 @@ var AppUtils = (function(){
                     }
                 });
             };
-            
+
             return errors; // if there are any errors
         }
     });
-    
+
     /*
-     * 
+     *
      */
     ModelModal = GenericModal.extend({
         renderBody : function() {
             this.form = new Backbone.Form({
                 model: this.model
             });
-            
+
             if (this.options.modal_template) {
                 this.form.template = _.template($(this.options.modal_template).html());
             };
-            
+
             this.form.render();
         },
 
-        // over-ride for the actual data submission        
+        // over-ride for the actual data submission
         submitData : function(callback) {
             // gather the data and update the underlying model etc.
             var errors = this.form.commit(
             ); // To save the values from the form back into the model
-            
+
             if (!errors) { // save if there are no errors
                 var refreshFn = this.options.refresh;
                 var refreshEvent = this.options.view_refresh_event;
-            
+
                 // accept-charset="UTF-8"
-                this.model.save(null, { 
+                this.model.save(null, {
                     success : function(mdl) {
                         // Refresh the view if there is a refresh method
                         if (refreshEvent) {
-                            eventAggregator.trigger(refreshEvent); 
+                            eventAggregator.trigger(refreshEvent);
                         }
                         if (refreshFn) {
                             refreshFn(mdl); // cause problem with templates used ???
@@ -504,13 +504,13 @@ var AppUtils = (function(){
                     }
                 }); // save the model to the server
             }
-            
+
             return errors; // if there are any errors
         }
     });
 
     /*
-     * 
+     *
      */
     FileModelModal = ModelModal.extend({
         submit : function(e) {
@@ -521,7 +521,7 @@ var AppUtils = (function(){
 
             this.$el.find('.progress_bar').css('width', '0%');
             this.model.on("progress", this.progress, this);
-            
+
             var that = this;
             this.submitData(function() {
                 that.$el.modal("hide");
@@ -535,9 +535,9 @@ var AppUtils = (function(){
             this.$el.find('.progress-bar').css('width', percent + '%');
         }
     });
-    
+
     /*
-     * 
+     *
      */
     ItemEditView = Marionette.ItemView.extend({
         events : {
@@ -545,17 +545,17 @@ var AppUtils = (function(){
             "click .model-cancel-button" : "cancelEdit", // flip to an edit view ...
             "click .model-submit-button" : "submit"
         },
-        
+
         formEvents : {
         },
-        
+
         editModel : function(e) {
             e.preventDefault();
             e.stopPropagation();
             // flip to the edit view
             this.renderForm();
         },
-        
+
         cancelEdit : function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -565,7 +565,7 @@ var AppUtils = (function(){
                 this.options.resetFn(this);
             }
         },
-        
+
         submit  : function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -577,16 +577,16 @@ var AppUtils = (function(){
                 this.renderModel();
             }
         },
-        
+
         submitData : function() {
             // gather the data and update the underlying model etc.
             var errors = this.form.commit(); // To save the values from the form back into the model
-            
+
             if (!errors) { // save if there are no errors
                 var refreshFn = this.options.refresh;
                 var mdl = this.model;
-            
-                this.model.save(null, { 
+
+                this.model.save(null, {
                     success : function(mdl) {
                         // Refresh the view if there is a refresh method
                         if (refreshFn) {
@@ -602,28 +602,28 @@ var AppUtils = (function(){
                     }
                 }); // save the model to the server
             };
-            
+
             return errors; // if there are any errors
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.listenTo(this.model, 'change', this.render);
-            
+
             this.template = _.template($('#item-edit-template').html()); //_.template(_model_html); //
 
             this.model.on("sync", this.options.syncCallback ); // when the modal does the update and second after the update to the server
         },
-        
+
         render : function() {
             this.$el.html($(this.template({
                 // title : this.options.title
             })));
-            
+
             this.renderModel();
             this.$el.find('.bpopover').popover({html : true});
         },
-        
+
         renderModel : function() {
             var disableEdit = false;
             if (this.options.editDisableCondition) {
@@ -637,16 +637,16 @@ var AppUtils = (function(){
             } else {
                 this.$el.find('.model-edit-button').addClass('hidden-button');
             }
-            
+
             if (this.options.readTemplate) {
                 html = _.template($(this.options.readTemplate).html(), this.model.toJSON());
-                
+
                 this.$el.find(".model-body").html(html);
             } else {
                 this.$el.find(".model-body").html("");
             };
         },
-        
+
         renderForm : function() {
             this.$el.find('.model-cancel-button').removeClass('hidden-button');
             this.$el.find('.model-submit-button').removeClass('hidden-button');
@@ -655,35 +655,35 @@ var AppUtils = (function(){
             this.form = new Backbone.Form({
                     model: this.model
             });
-            
+
             if (this.options.modal_template) {
                 this.form.template = _.template($(this.options.modal_template).html());
             };
-            
+
             this.form.render();
-            
+
             var form = this.form;
             // iterate through the form events and add to the form
             _.each(this.formEvents, function(value, key, list) {
                 form.on(key, value);
             });
-            
+
             // the render it in the area
             this.$el.find(".model-body").html(this.form.el);
             this.$el.find('.bpopover').popover({html : true});
-            
+
             if (this.options.form_init) {
                 this.options.form_init(form, this.model);
             }
         },
-        
+
         onEvent : function(eventname, func) {
             this.formEvents[eventname] = func;
         }
     });
-    
+
     /*
-     * 
+     *
      */
     ItemView = Marionette.ItemView.extend({
 
@@ -695,18 +695,18 @@ var AppUtils = (function(){
             "click .model-preview-button"       : "preview",
             "click .model-copy-button"          : "copy"
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
             this.listenTo(this.model, 'change', this.render);
-            
+
             if (this.options.url) {
                 this.model.urlRoot = this.options.url;
             };
 
             this.model.on("sync", this.options.syncCallback ); // when the modal does the update and second after the update to the server
         },
-        
+
         select : function(event) {
             if (this.options.selectFn) {
                 this.$el.parent().find('tr').removeClass('info');
@@ -715,19 +715,19 @@ var AppUtils = (function(){
             }
             this.editModel();
         },
-        
+
         copy : function(event) {
             if (this.options.copyFn) {
                 this.options.copyFn(this.model);
             }
         },
-        
+
         preview : function(event) {
             if (this.options.previewFn) {
                 this.options.previewFn(this.model);
             }
         },
-              
+
         drillDown : function(event) {
             if (this.options.drillDownFn) {
                 this.$el.parent().find('tr').removeClass('info');
@@ -735,7 +735,7 @@ var AppUtils = (function(){
                 this.options.drillDownFn(this.model.id);
             }
         },
-        
+
         editModel : function() {
             // If there is no template then we use a modal
             if (this.options.readTemplate) {
@@ -745,7 +745,7 @@ var AppUtils = (function(){
                     editDisableCondition : this.options.editDisableCondition,
                     modal_template  : this.options.modal_template
                 });
-                
+
                 v.render();
                 $(this.options.itemArea).html(v.$el);
             } else if (this.options.modal_edit) {
@@ -759,12 +759,12 @@ var AppUtils = (function(){
                     mdl.form.on(this.options.form_event, this.options.form_event_fn );
                 }
             }
-            
+
         },
-        
+
         deleteModel : function() {
             var clearFn = this.options.clearFn;
-            
+
             var thatModel = this.model;
 
             modal = new AppUtils.ConfirmModel({
@@ -784,13 +784,13 @@ var AppUtils = (function(){
                 }
             });
             modal.render();
-            
+
         },
     });
 
     /*
-     * 
-     */    
+     *
+     */
     CollectionView = Backbone.Marionette.CollectionView.extend({
         itemView: ItemView,
 
@@ -798,15 +798,15 @@ var AppUtils = (function(){
             this.options = options || {};
             eventAggregator.on(this.options.view_refresh_event, this.refreshList, this);
         },
-        
+
         refreshList : function() {
             this.collection.fetch({});
         }
     });
-    
-    
+
+
     /*
-     * 
+     *
      */
     function renderCollection(collection, options) {
         viewType = CollectionView.extend({
@@ -840,7 +840,7 @@ var AppUtils = (function(){
                                     });
                         }
                     });
-                    
+
         var collectionView = new viewType({
                         collection          : collection,
                         view_refresh_event  : options.view_refresh_event,
@@ -854,11 +854,11 @@ var AppUtils = (function(){
             options.region.show(collectionView);
         }
     };
-    
-    
+
+
     /*
-     * 
-     */    
+     *
+     */
     CompositeView = Backbone.Marionette.CompositeView.extend({
         itemView: ItemView,
 
@@ -866,14 +866,14 @@ var AppUtils = (function(){
             this.options = options || {};
             eventAggregator.on(this.options.view_refresh_event, this.refreshList, this);
         },
-        
+
         refreshList : function() {
             this.collection.fetch({});
         }
     });
-    
+
     /*
-     * 
+     *
      */
     function renderComposite(collection, options) {
         if(options.viewType.toLowerCase() == "composite"){
@@ -881,7 +881,7 @@ var AppUtils = (function(){
         } else {
         	var view  = CollectionView;
         }
-        
+
         viewType = view.extend({
                         attributes          : options.collection_attributes,
                         itemViewOptions     : {
@@ -916,7 +916,7 @@ var AppUtils = (function(){
                                     });
                         }
                     });
-                    
+
         var collectionView = new viewType({
                         collection          : collection,
                         view_refresh_event  : options.view_refresh_event,
@@ -930,16 +930,16 @@ var AppUtils = (function(){
             options.region.show(collectionView);
         }
     };
-    
-    
+
+
     /*
-     * 
+     *
      */
     Conflict = Backbone.RelationalModel.extend({});
     ConflictCollection = Backbone.Collection.extend({
         model : Conflict
     });
-    
+
     Conflicts = Backbone.RelationalModel.extend({
         relations : [{
             type           : Backbone.HasMany,
@@ -985,20 +985,20 @@ var AppUtils = (function(){
             "click .conflict": "selectConflict",
             "click .exclude": "excludeConflict"
         },
-        
+
         initialize : function(options) {
             this.options = options || {};
         },
-        
+
         selectConflict : function(ev) {
             // scroll to the problem item
             room_name = this.model.get('room_name');
             time = this.model.get('item_start');
             item_id = this.model.get('item_id'); // g id
-            
+
             DailyGrid.scrollTo(room_name, time);
         },
-        
+
         excludeConflict : function(ev) {
             var model = this.model;
             var baseUri = this.options.baseUri ? this.options.baseUri : '';
@@ -1009,7 +1009,7 @@ var AppUtils = (function(){
                     data = { conflict_exception : {
                             conflict_type : model.get('type')
                         } };
-                        
+
                     switch (model.get('type')) {
                         case 'schedule' :
                             data['conflict_exception']['affected'] = model.get('person_id');
@@ -1042,7 +1042,7 @@ var AppUtils = (function(){
                             data['conflict_exception']['src2'] = model.get('conflict_item_id');
                             break;
                     };
-                        
+
                     $.ajax({
                         url : baseUri + "/items/confict_exceptions",
                         type : 'POST',
@@ -1057,17 +1057,17 @@ var AppUtils = (function(){
                 }
             });
             modal.render();
-            
+
         }
     });
-    
+
     ConflictCollectionView = Backbone.Marionette.CollectionView.extend({
         itemView : ConflictView,
-        
+
         initialize : function(options) {
             this.options = options || {};
         },
-        
+
         // build the view using a dynamic template based on itemViewTemplate
         buildItemView: function(item, ItemViewType, itemViewOptions){
             var options = _.extend({
@@ -1075,13 +1075,13 @@ var AppUtils = (function(){
                 template : this.options.itemViewTemplate,
                 baseUri  : this.options.baseUri
                 }, itemViewOptions);
-            
+
             var view = new ItemViewType(options);
 
             return view;
         }
     });
-    
+
     ConflictLayout = Backbone.Marionette.Layout.extend({
         regions : {
             scheduleRegion     : "#schedule-region-div",
@@ -1092,34 +1092,34 @@ var AppUtils = (function(){
             backToBackRegion   : "#back-to-back-region-div",
         },
     });
-        
+
     /*
-     * 
+     *
      */
     return {
-        
+
         partial : function(part, data) {
             return _.template( $('#' + part ).html(), data);
         },
-        
+
         eventAggregator : eventAggregator,
-        
+
         InfoModal : InfoModal,
-        
+
         ConfirmModel : ConfirmModel,
-        
+
         GenericModal : GenericModal,
-        
+
         FormModal : FormModal,
-        
+
         ModelModal : ModelModal,
-        
+
         FileModelModal : FileModelModal,
-        
+
         PanelModal : PanelModal,
-        
+
         PlainPanelModal : PlainPanelModal,
-        
+
         createEditItemView : function(options) {
             var view = new ItemEditView({
                             model           : options.model,
@@ -1141,13 +1141,13 @@ var AppUtils = (function(){
                             modal_template  : options.modal_template,
                             form_init       : options.form_init
             });
-            
+
             view.render();
             $(options.itemArea).html(view.$el);
-            
+
             return view;
         },
-        
+
         createCollectionView : function(options) {
             if (!options.collection) {
                 collection = new options.collectionType();
@@ -1163,7 +1163,7 @@ var AppUtils = (function(){
 
             return collection;
         },
-        
+
         createCompositeView : function(options) {
             if (!options.collection) {
                 collection = new options.collectionType();
@@ -1179,10 +1179,10 @@ var AppUtils = (function(){
 
             return collection;
         },
-        
+
         ConflictLayout : ConflictLayout,
         Conflicts : Conflicts,
-        
+
         createConflictCollectionView : function (collection, viewTemplate, region, baseUri) {
             var collectionView = new ConflictCollectionView({
                 collection : collection,
@@ -1207,6 +1207,6 @@ var AppUtils = (function(){
                 return '';
             }
         }
-    
+
     };
 })();
